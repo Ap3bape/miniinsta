@@ -1,0 +1,38 @@
+# what day of the week do users register the most:
+select dayofweek(created_at),count(*) from users group by dayofweek(created_at);
+select dayname(created_at),count(*) from users group by dayname(created_at);
+
+# audience who have never posted a photo
+show tables;
+select users.id,users.username,photos.image_url
+ from users left join photos on users.id=photos.user_id where image_url is null;
+ 
+ #who posted the picture which got the highest likes
+
+ 
+ select likes.photo_id, count(likes.photo_id), photos.user_id, users.username 
+ from likes join photos on likes.photo_id=photos.id join users
+ on users.id=photos.user_id group by likes.photo_id order by count(likes.photo_id) desc;
+ 
+#How many times does a user post using subquery
+
+select 
+(select count(*) from photos ) / (select count(*) from users) 
+as average;
+
+#top 5 most commonly used hashtags
+select tag_id , count(tag_id), tag_name from
+tags join photo_tags on tags.id=photo_tags.tag_id group by tag_id 
+order by count(tag_id) desc;
+
+#finding users who have liked very single photo;
+
+SELECT username, 
+       Count(*) AS num_likes 
+FROM   users 
+       INNER JOIN likes 
+               ON users.id = likes.user_id 
+GROUP  BY likes.user_id 
+HAVING num_likes = (SELECT Count(*) 
+                    FROM   photos); 
+
